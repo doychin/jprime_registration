@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.bgjug.jprime.registration.api.LoginApi;
+import org.bgjug.jprime.registration.api.SpeakerApi;
 import org.bgjug.jprime.registration.api.TicketApi;
 import org.bgjug.jprime.registration.api.VisitorApi;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
@@ -47,5 +48,9 @@ public class RestClientFactory {
 
     public static TicketApi ticketApi() {
         return getInstance().restClientBuilder.build(TicketApi.class);
+    }
+
+    public static SpeakerApi speakerApi() {
+        return getInstance().restClientBuilder.build(SpeakerApi.class);
     }
 }

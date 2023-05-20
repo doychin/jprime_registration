@@ -5,6 +5,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.api.Visitor;
 import org.bgjug.jprime.registration.api.VisitorSearch;
@@ -125,8 +124,7 @@ public class VisitorSearchDialog extends JDialog {
                     response.readEntity(String.class), JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            visitorList = new ObjectMapper().readValue(response.readEntity(String.class),
-                new TypeReference<List<Visitor>>() {});
+            visitorList = response.readEntity(new VisitorList());
             if (visitorList.isEmpty()) {
                 JOptionPane.showMessageDialog(this,
                     "There are no matching results for the specified search criteria", "Nothing found",
@@ -184,4 +182,6 @@ public class VisitorSearchDialog extends JDialog {
             updateEditFieldsState();
         }
     }
+
+    private static class VisitorList extends GenericType<List<Visitor>> {}
 }

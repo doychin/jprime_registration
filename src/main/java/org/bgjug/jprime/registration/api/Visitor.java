@@ -1,47 +1,42 @@
 package org.bgjug.jprime.registration.api;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Visitor {
 
-    private String name;
+    private final String name;
 
-    private String email;
+    private final String email;
 
-    private String company;
+    private final String company;
 
-    private String ticket;
+    private final String ticket;
+
+    @JsonCreator
+    public Visitor(@JsonProperty("name") String name, @JsonProperty("email") String email,
+        @JsonProperty("company") String company, @JsonProperty("ticket") String ticket) {
+        this.name = name;
+        this.email = email;
+        this.company = company;
+        this.ticket = ticket;
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getCompany() {
         return company;
     }
 
-    public void setCompany(String company) {
-        this.company = company;
-    }
-
     public String getTicket() {
         return ticket;
-    }
-
-    public void setTicket(String ticket) {
-        this.ticket = ticket;
     }
 }
