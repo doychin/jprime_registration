@@ -52,6 +52,16 @@
             <url>https://cache-redirector.jetbrains.com/intellij-dependencies</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jetbrains.releases</id>
+            <url>https://www.jetbrains.com/intellij-repository/releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>jetbrains.3rdparty</id>
+            <url>https://cache-redirector.jetbrains.com/intellij-dependencies</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -115,11 +125,6 @@
             <artifactId>java-gui-forms-rt</artifactId>
             <version>${intellij.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.jetbrains.intellij.java</groupId>
-            <artifactId>java-compiler-ant-tasks</artifactId>
-            <version>${intellij.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
@@ -167,7 +172,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>
@@ -176,10 +181,11 @@
                                 <path id="j2sp">
                                     <pathelement location="${project.basedir}/src/main/java"/>
                                 </path>
-                                <taskdef name="javac2" classpathref="maven.runtime.classpath"
+                                <taskdef name="javac2" classpathref="maven.plugin.classpath"
                                          classname="com.intellij.ant.Javac2"/>
                                 <javac2 destdir="${project.basedir}/target/classes">
                                     <src refid="j2sp"/>
+                                    <classpath refid="maven.compile.classpath"/>
                                 </javac2>
                             </target>
                         </configuration>
@@ -189,6 +195,11 @@
                     </execution>
                 </executions>
                 <dependencies>
+                    <dependency>
+                        <groupId>com.jetbrains.intellij.java</groupId>
+                        <artifactId>java-compiler-ant-tasks</artifactId>
+                        <version>${intellij.version}</version>
+                    </dependency>
                     <dependency>
                         <groupId>com.sun</groupId>
                         <artifactId>tools</artifactId>
