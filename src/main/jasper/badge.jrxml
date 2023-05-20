@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_Landscape" pageWidth="255" pageHeight="136" orientation="Landscape" columnWidth="255" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="89523633-00bf-48f8-aaff-41935545d107">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<import value="java.util.stream.*"/>
+	<parameter name="type" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Visitor"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="gift" class="java.lang.Boolean">
+		<defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+	</parameter>
+	<parameter name="lunch" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Lunch day 1"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="event" class="java.lang.String">
+		<defaultValueExpression><![CDATA["JPrime 2023"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="qr" class="java.lang.String">
+		<defaultValueExpression><![CDATA["{\"event\": \"" + $P{event} + "\", \"name\": \"" + $P{name} + "\", \"company\": \"" + $P{company} + "\", \"email\": \"" + $P{email} + "\", \"type\" : \"" + $P{type} + "\"}"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="company" class="java.lang.String">
+		<defaultValueExpression><![CDATA["dSoft-Bulgaria Ltd."]]></defaultValueExpression>
+	</parameter>
+	<parameter name="email" class="java.lang.String">
+		<defaultValueExpression><![CDATA["doychin@gmail.com"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="name" class="java.lang.String">
+		<defaultValueExpression><![CDATA["Doychin Bondzhev"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<detail>
+		<band height="130" splitType="Stretch">
+			<textField>
+				<reportElement x="3" y="6" width="134" height="25" uuid="7c5fe2bd-714a-4e10-b8c8-30a6edbcfa09"/>
+				<textElement textAlignment="Center">
+					<font size="18" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{event}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement mode="Transparent" x="175" y="26" width="78" height="80" uuid="9a96e6c4-8f7d-4c04-9977-3795d33cde33">
+					<property name="com.jaspersoft.studio.unit.margin" value="pixel"/>
+				</reportElement>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA[$P{qr}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField>
+				<reportElement mode="Opaque" x="137" y="6" width="113" height="20" forecolor="#FFFFFF" backcolor="#000000" uuid="3ecf8491-e133-45ae-9a97-fa088845dc27"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Arrays.stream($P{type}.split("")).collect(Collectors.joining(" "))]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="3" y="31" width="167" height="39" uuid="a0373296-7594-42ce-af7f-4fe98db836f9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="3" y="70" width="167" height="30" uuid="7d1f079d-21a0-4c3b-8c04-42b3f85abe50"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="3" y="107" width="20" height="20" uuid="586f3c2a-1c79-400a-bd6d-6dfbdd1157a8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</rectangle>
+			<textField>
+				<reportElement x="23" y="107" width="114" height="20" uuid="eb8a760c-daea-48bc-8e58-fe676562d1af">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+					<paragraph lineSpacing="Single" leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lunch}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="163" y="107" width="89" height="20" uuid="dd43f4f5-af39-47b5-85d5-655427161565">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$P{gift}]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14"/>
+					<paragraph lineSpacing="Single" leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[Gift set]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="143" y="107" width="20" height="20" uuid="e638328b-45cf-4865-a050-3aa036245694">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<printWhenExpression><![CDATA[$P{gift}]]></printWhenExpression>
+				</reportElement>
+			</rectangle>
+		</band>
+	</detail>
+</jasperReport>
