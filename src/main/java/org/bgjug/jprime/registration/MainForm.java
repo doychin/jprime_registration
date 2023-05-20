@@ -3,7 +3,7 @@ package org.bgjug.jprime.registration;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.model.VisitorData;
 
 public class MainForm {
@@ -51,6 +51,6 @@ public class MainForm {
     }
 
     private void visitorRegistration(ActionEvent e) {
-        RegistrationForm registrationForm = new RegistrationForm(cookie);
+        new RegistrationForm(cookie);
     }
 }

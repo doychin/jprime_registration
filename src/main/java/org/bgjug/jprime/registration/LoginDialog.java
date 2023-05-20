@@ -48,18 +48,21 @@ public class LoginDialog extends JDialog {
         });
 
         // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void onOK() {
-        try (Response r = loginApi().login(userNameField.getText(), passwordField.getText(), "Submit")) {
+        try (Response r = loginApi().login(userNameField.getText(), new String(passwordField.getPassword()),
+            "Submit")) {
             if (r.getStatus() != 302 || !r.getHeaderString("Location").contains("admin")) {
                 return;
             }
 
             cookie = r.getCookies().get("JSESSIONID").getValue();
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(this, "Unable to login: " + e.getMessage(), "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
 
         // add your code here

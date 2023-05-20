@@ -9,7 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.api.VisitorSearch;
 
 public class VisitorSearchDialog extends JDialog {
