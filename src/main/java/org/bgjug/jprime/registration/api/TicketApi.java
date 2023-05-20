@@ -14,6 +14,7 @@ public interface TicketApi {
 
     @POST
     @Path("{ticket}")
-    Response confirmVisitorRegistration(@PathParam("ticket") String ticket, @CookieParam("JSESSIONID") String session);
+    Response confirmVisitorRegistration(@PathParam("ticket") String ticket,
+        @CookieParam("JSESSIONID") String session);
 
 }

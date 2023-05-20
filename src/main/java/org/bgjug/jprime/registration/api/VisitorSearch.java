@@ -1,6 +1,7 @@
 package org.bgjug.jprime.registration.api;
 
 public class VisitorSearch {
+
     private String email;
 
     private String firstName;

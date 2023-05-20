@@ -15,14 +15,16 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import org.bgjug.jprime.registration.model.VisitorData;
 
 public class BadgePrinter {
-    public static JasperPrint printBadge(String event, VisitorData visitorData, boolean printDay1, boolean printDay2, boolean gift, boolean print) {
+
+    public static JasperPrint printBadge(String event, VisitorData visitorData, boolean printDay1,
+        boolean printDay2, boolean gift, boolean print) {
         try {
             String resourceName = "/badge.jasper";
             InputStream reportTemplate = BadgePrinter.class.getResourceAsStream(resourceName);
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportTemplate);
 
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("name",visitorData.getName());
+            parameters.put("name", visitorData.getName());
             parameters.put("company", visitorData.getCompany());
             parameters.put("type", visitorData.getType());
             parameters.put("email", "not@this.year");//visitorData.getEmail());

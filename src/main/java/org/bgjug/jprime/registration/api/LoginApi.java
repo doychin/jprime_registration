@@ -12,5 +12,6 @@ public interface LoginApi {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    Response login(@FormParam("username") String user, @FormParam("password") String password, @FormParam("submit")String submit);
+    Response login(@FormParam("username") String user, @FormParam("password") String password,
+        @FormParam("submit") String submit);
 }

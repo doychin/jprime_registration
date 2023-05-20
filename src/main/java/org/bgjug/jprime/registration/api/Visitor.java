@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Visitor {
 
     private String name;
+
     private String email;
+
     private String company;
 
     private String ticket;

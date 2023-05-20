@@ -24,5 +24,6 @@ public interface VisitorApi {
 
     @POST
     @Path("search/{branch}")
-    Response visitorSearch(@PathParam("branch") String branch, VisitorSearch visitorSearch, @CookieParam("JSESSIONID") String session);
+    Response visitorSearch(@PathParam("branch") String branch, VisitorSearch visitorSearch,
+        @CookieParam("JSESSIONID") String session);
 }
