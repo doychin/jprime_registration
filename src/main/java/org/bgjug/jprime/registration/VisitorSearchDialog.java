@@ -6,6 +6,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.ws.rs.core.Response;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -24,7 +25,7 @@ import org.bgjug.jprime.registration.api.VisitorSearch;
 public class VisitorSearchDialog extends JDialog {
 
     private static final Vector<String> COLUMN_NAMES =
-        new Vector<>(Arrays.asList("Name", "Company", "E-mail"));
+        new Vector<>(Arrays.asList("Name", "Company", "E-mail", "Ticket ID"));
 
     private final String cookie;
 
@@ -53,9 +54,12 @@ public class VisitorSearchDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(btnSearch);
-        setLocationRelativeTo(null);
+        pack();
+        Point p = Utilities.centerComponentOnTheScreen(this);
+        setLocation(p);
         setTitle("Visitors search");
         visitorsTable.getSelectionModel().addListSelectionListener(this::selectionChanged);
+        visitorsTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         buttonOK.addActionListener(e -> onOK());
 
@@ -136,12 +140,17 @@ public class VisitorSearchDialog extends JDialog {
         }
 
         visitorsTable.setModel(new DefaultTableModel(visitorList.stream()
-            .map(v -> new Vector<>(Arrays.asList(v.getName(), v.getCompany(), v.getEmail())))
+            .map(v -> new Vector<>(Arrays.asList(v.getName(), v.getCompany(), v.getEmail(), v.getTicket())))
             .collect(Collectors.toCollection(Vector::new)), COLUMN_NAMES));
     }
 
     private void onOK() {
-        // add your code here
+        Object cellValue = visitorsTable.getModel().getValueAt(visitorsTable.getSelectedRow(), 3);
+        String ticket = cellValue != null ? cellValue.toString() : null;
+        if (ticket != null) {
+            ticketInfo = new RegistrationForm.TicketInfo(null, "JPrime 2023", "Visitor", ticket);
+        }
+
         dispose();
     }
 

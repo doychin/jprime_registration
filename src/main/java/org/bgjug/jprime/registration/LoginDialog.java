@@ -2,6 +2,7 @@ package org.bgjug.jprime.registration;
 
 import javax.swing.*;
 import javax.ws.rs.core.Response;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -27,7 +28,9 @@ public class LoginDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        setLocationRelativeTo(null);
+        pack();
+        Point p = Utilities.centerComponentOnTheScreen(this);
+        setLocation(p);
 
         setTitle("JPrime 2023 Registration");
 

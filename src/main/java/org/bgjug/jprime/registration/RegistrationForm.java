@@ -42,7 +42,6 @@ public class RegistrationForm {
     static JFrame frame = new JFrame("Visitor Registration");
 
     static {
-        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
@@ -52,6 +51,8 @@ public class RegistrationForm {
 
         frame.setContentPane(mainPanel);
         frame.pack();
+        Point p = Utilities.centerComponentOnTheScreen(frame);
+        frame.setLocation(p);
         frame.setVisible(true);
         closeButton.addActionListener(e -> RegistrationForm.frame.dispose());
         findButton.addActionListener(this::searchForVisitor);

@@ -2,14 +2,14 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.bgjug.jprime.registration.RegistrationForm">
   <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
     <constraints>
-      <xy x="20" y="20" width="640" height="584"/>
+      <xy x="20" y="20" width="640" height="614"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
       <grid id="c4352" layout-manager="GridBagLayout">
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties/>
@@ -76,7 +76,7 @@
       </grid>
       <grid id="5005e" binding="viewPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties>
@@ -93,17 +93,11 @@
               <text value="Please scan a ticket or search for a visitor"/>
             </properties>
           </component>
-          <component id="c4a51" class="javax.swing.JButton" binding="findButton" default-binding="true">
-            <constraints border-constraint="North"/>
-            <properties>
-              <text value="&amp;Search by name, email or company"/>
-            </properties>
-          </component>
         </children>
       </grid>
       <grid id="dcce5" layout-manager="GridBagLayout">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties/>
@@ -132,6 +126,15 @@
           </vspacer>
         </children>
       </grid>
+      <component id="c4a51" class="javax.swing.JButton" binding="findButton" default-binding="true">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <text value="&amp;Search by name, email or company"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>
