@@ -146,6 +146,10 @@
             <id>jetbrains.3rdparty</id>
             <url>https://cache-redirector.jetbrains.com/intellij-dependencies</url>
         </repository>
+        <repository>
+            <id>jaspersoft</id>
+            <url>http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
