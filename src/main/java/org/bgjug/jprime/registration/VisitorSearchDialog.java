@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.api.Visitor;
 import org.bgjug.jprime.registration.api.VisitorSearch;
+import org.bgjug.jprime.registration.client.RestClientFactory;
 
 public class VisitorSearchDialog extends JDialog {
 
     private static final Vector<String> COLUMN_NAMES =
         new Vector<>(Arrays.asList("Name", "Company", "E-mail", "Ticket ID"));
-
-    private final String cookie;
 
     private JPanel contentPane;
 
@@ -48,8 +47,7 @@ public class VisitorSearchDialog extends JDialog {
 
     private RegistrationForm.TicketInfo ticketInfo;
 
-    public VisitorSearchDialog(String cookie) {
-        this.cookie = cookie;
+    public VisitorSearchDialog() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(btnSearch);
@@ -118,7 +116,7 @@ public class VisitorSearchDialog extends JDialog {
         }
 
         List<Visitor> visitorList;
-        try (Response response = RestClientFactory.visitorApi().visitorSearch("2023", searchData, cookie)) {
+        try (Response response = RestClientFactory.visitorApi().visitorSearch("2023", searchData)) {
             if (response.getStatus() != 200) {
                 JOptionPane.showMessageDialog(this, "Error while calling search on the remote server!!!",
                     response.readEntity(String.class), JOptionPane.ERROR_MESSAGE);

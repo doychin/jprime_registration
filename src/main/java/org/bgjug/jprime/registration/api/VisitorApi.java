@@ -9,21 +9,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
+
 @Path("/api/visitor")
 @Produces(MediaType.APPLICATION_JSON)
 public interface VisitorApi {
 
     @GET
     @Path("{branch}")
-    Response allVisitors(@PathParam("branch") String branch, @CookieParam("JSESSIONID") String session);
+    Response allVisitors(@PathParam("branch") String branch);
 
     @GET
     @Path("{branch}/{ticket}")
-    Response visitorByTicket(@PathParam("branch") String branch, @PathParam("ticket") String ticket,
-        @CookieParam("JSESSIONID") String session);
+    Response visitorByTicket(@PathParam("branch") String branch, @PathParam("ticket") String ticket);
 
     @POST
     @Path("search/{branch}")
-    Response visitorSearch(@PathParam("branch") String branch, VisitorSearch visitorSearch,
-        @CookieParam("JSESSIONID") String session);
+    Response visitorSearch(@PathParam("branch") String branch, VisitorSearch visitorSearch);
 }

@@ -14,5 +14,5 @@ public interface SpeakerApi {
 
     @GET
     @Path("{branch}")
-    Response allSpeakers(@PathParam("branch") String branch, @CookieParam("JSESSIONID") String session);
+    Response allSpeakers(@PathParam("branch") String branch);
 }

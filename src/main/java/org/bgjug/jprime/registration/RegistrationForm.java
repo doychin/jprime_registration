@@ -17,13 +17,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.commons.lang3.StringUtils;
+import org.bgjug.jprime.registration.client.RestClientFactory;
 import org.bgjug.jprime.registration.model.VisitorData;
 
 public class RegistrationForm {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    private final String cookie;
 
     private JTextField txtTicketInformation;
 
@@ -45,8 +44,7 @@ public class RegistrationForm {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 
-    public RegistrationForm(String cookie) {
-        this.cookie = cookie;
+    public RegistrationForm() {
         txtTicketInformation.addActionListener(this::findAndPrint);
 
         frame.setContentPane(mainPanel);
@@ -60,7 +58,7 @@ public class RegistrationForm {
     }
 
     private void searchForVisitor(ActionEvent actionEvent) {
-        VisitorSearchDialog dialog = new VisitorSearchDialog(cookie);
+        VisitorSearchDialog dialog = new VisitorSearchDialog();
         dialog.pack();
         dialog.setVisible(true);
         if (dialog.getTicketInfo() == null) {
@@ -147,7 +145,7 @@ public class RegistrationForm {
         frame.pack();
 
         try (Response response = RestClientFactory.ticketApi()
-            .confirmVisitorRegistration(ticketInfo.ticket, cookie)) {
+            .confirmVisitorRegistration(ticketInfo.ticket)) {
             if (response.getStatus() != 200) {
                 appendErrorMessageToLogPane("Unable to confirm ticket registration!!!");
                 return;
@@ -163,7 +161,7 @@ public class RegistrationForm {
     private VisitorData findVisitorData(TicketInfo ticketInfo) {
 
         try (Response response = RestClientFactory.visitorApi()
-            .visitorByTicket("2023", ticketInfo.ticket, cookie)) {
+            .visitorByTicket("2023", ticketInfo.ticket)) {
 
             if (response.getStatus() != 200) {
                 appendErrorMessageToLogPane("Unable to find this ticket!!!");

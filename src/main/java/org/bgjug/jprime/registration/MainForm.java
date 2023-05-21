@@ -7,34 +7,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.api.Speaker;
+import org.bgjug.jprime.registration.client.RestClientFactory;
 import org.bgjug.jprime.registration.model.VisitorData;
 
 public class MainForm {
 
-    private final String cookie;
-
-    private JButton visitorRegButton;
-
     static JFrame frame;
 
-    public static void main(String[] args) {
-        LoginDialog dialog = new LoginDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        if (StringUtils.isEmpty(dialog.getCookie())) {
-            System.exit(0);
-        }
-
-        frame = new JFrame("JPrime 2023 Registration");
-        frame.setContentPane(new MainForm(dialog.getCookie()).mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        Point p = Utilities.centerComponentOnTheScreen(frame);
-        frame.setLocation(p);
-        frame.setVisible(true);
-    }
+    private JButton visitorRegButton;
 
     private JPanel mainPanel;
 
@@ -42,11 +23,28 @@ public class MainForm {
 
     private JButton testBadgeButton;
 
-    public MainForm(String cookie) {
-        this.cookie = cookie;
+    public MainForm() {
         visitorRegButton.addActionListener(this::visitorRegistration);
         testBadgeButton.addActionListener(this::testBadge);
         speakerRegistrationButton.addActionListener(this::speakerRegistration);
+    }
+
+    public static void main(String[] args) {
+        LoginDialog dialog = new LoginDialog();
+        dialog.pack();
+        dialog.setVisible(true);
+
+        if (!dialog.isSuccess()) {
+            System.exit(0);
+        }
+
+        frame = new JFrame("JPrime 2023 Registration");
+        frame.setContentPane(new MainForm().mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        Point p = Utilities.centerComponentOnTheScreen(frame);
+        frame.setLocation(p);
+        frame.setVisible(true);
     }
 
     private void speakerRegistration(ActionEvent actionEvent) {
@@ -58,7 +56,7 @@ public class MainForm {
         }
 
         List<Speaker> speakerList;
-        try (Response response = RestClientFactory.speakerApi().allSpeakers("2023", cookie)) {
+        try (Response response = RestClientFactory.speakerApi().allSpeakers("2023")) {
             if (response.getStatus() != 200) {
                 JOptionPane.showMessageDialog(frame, "Error while loading speakers information!!!",
                     response.readEntity(String.class), JOptionPane.ERROR_MESSAGE);
@@ -105,7 +103,7 @@ public class MainForm {
     }
 
     private void visitorRegistration(ActionEvent e) {
-        new RegistrationForm(cookie);
+        new RegistrationForm();
     }
 
     private static class SpeakerList extends GenericType<List<Speaker>> {}

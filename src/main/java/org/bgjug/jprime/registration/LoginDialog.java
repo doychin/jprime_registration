@@ -7,7 +7,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import static org.bgjug.jprime.registration.RestClientFactory.loginApi;
+import org.bgjug.jprime.registration.client.RestClientFactory;
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
+
+import static org.bgjug.jprime.registration.client.RestClientFactory.loginApi;
 
 public class LoginDialog extends JDialog {
 
@@ -23,6 +27,8 @@ public class LoginDialog extends JDialog {
 
     private String cookie;
 
+    private boolean success;
+
     public LoginDialog() {
         setContentPane(contentPane);
         setModal(true);
@@ -34,8 +40,9 @@ public class LoginDialog extends JDialog {
 
         setTitle("JPrime 2023 Registration");
 
-        userNameField.setText("admin");
-        passwordField.setText("password");
+        Config config =  ConfigProvider.getConfig();
+        userNameField.setText(config.getOptionalValue("org.bgjug.jprime.registration.username", String.class).orElse(null));
+        passwordField.setText(config.getOptionalValue("org.bgjug.jprime.registration.password", String.class).orElse(null));
 
         buttonOK.addActionListener(e -> onOK());
 
@@ -56,28 +63,26 @@ public class LoginDialog extends JDialog {
     }
 
     private void onOK() {
-        try (Response r = loginApi().login(userNameField.getText(), new String(passwordField.getPassword()),
-            "Submit")) {
-            if (r.getStatus() != 302 || !r.getHeaderString("Location").contains("admin")) {
-                return;
+        try {
+            success = RestClientFactory.initializeCredentials(userNameField.getText(), new String(passwordField.getPassword()));
+            if (!success) {
+                JOptionPane.showMessageDialog(this, "Invalid credentials!!!", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
-
-            cookie = r.getCookies().get("JSESSIONID").getValue();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to login: " + e.getMessage(), "Error",
                 JOptionPane.ERROR_MESSAGE);
         }
-
         // add your code here
         dispose();
     }
 
     private void onCancel() {
-        cookie = null;
+        success = false;
         dispose();
     }
 
-    public String getCookie() {
-        return cookie;
+    public boolean isSuccess() {
+        return success;
     }
 }
