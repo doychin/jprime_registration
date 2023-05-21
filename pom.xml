@@ -20,6 +20,7 @@
             <id>default-profile</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <jdk>8</jdk>
                 <file>
                     <exists>${java.home}/../lib/tools.jar</exists>
                 </file>
@@ -32,6 +33,7 @@
             <id>mac-profile</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
+                <jdk>8</jdk>
                 <file>
                     <exists>${java.home}/../Classes/classes.jar</exists>
                 </file>
@@ -39,6 +41,99 @@
             <properties>
                 <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
             </properties>
+        </profile>
+        <profile>
+            <id>java8</id>
+            <activation>
+                <jdk>8</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <path id="j2sp">
+                                            <pathelement location="${project.basedir}/src/main/java"/>
+                                        </path>
+                                        <taskdef name="javac2" classpathref="maven.plugin.classpath"
+                                                 classname="com.intellij.ant.Javac2"/>
+                                        <javac2 destdir="${project.basedir}/target/classes">
+                                            <src refid="j2sp"/>
+                                            <classpath refid="maven.compile.classpath"/>
+                                        </javac2>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.jetbrains.intellij.java</groupId>
+                                <artifactId>java-compiler-ant-tasks</artifactId>
+                                <version>${intellij.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>com.sun</groupId>
+                                <artifactId>tools</artifactId>
+                                <scope>system</scope>
+                                <systemPath>${toolsjar}</systemPath>
+                                <version>1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>java11+</id>
+            <activation>
+                <jdk>[11</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <path id="j2sp">
+                                            <pathelement location="${project.basedir}/src/main/java"/>
+                                        </path>
+                                        <taskdef name="javac2" classpathref="maven.plugin.classpath"
+                                                 classname="com.intellij.ant.Javac2"/>
+                                        <javac2 destdir="${project.basedir}/target/classes">
+                                            <src refid="j2sp"/>
+                                            <classpath refid="maven.compile.classpath"/>
+                                        </javac2>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.jetbrains.intellij.java</groupId>
+                                <artifactId>java-compiler-ant-tasks</artifactId>
+                                <version>${intellij.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -170,47 +265,6 @@
                     </archive>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <configuration>
-                            <target>
-                                <path id="j2sp">
-                                    <pathelement location="${project.basedir}/src/main/java"/>
-                                </path>
-                                <taskdef name="javac2" classpathref="maven.plugin.classpath"
-                                         classname="com.intellij.ant.Javac2"/>
-                                <javac2 destdir="${project.basedir}/target/classes">
-                                    <src refid="j2sp"/>
-                                    <classpath refid="maven.compile.classpath"/>
-                                </javac2>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.jetbrains.intellij.java</groupId>
-                        <artifactId>java-compiler-ant-tasks</artifactId>
-                        <version>${intellij.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.sun</groupId>
-                        <artifactId>tools</artifactId>
-                        <scope>system</scope>
-                        <systemPath>${toolsjar}</systemPath>
-                        <version>1</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
             <plugin>
                 <groupId>com.pro-crafting.tools</groupId>
                 <artifactId>jasperreports-plugin</artifactId>

@@ -135,9 +135,10 @@ public class VisitorSearchDialog extends JDialog {
             return;
         }
 
-        visitorsTable.setModel(new DefaultTableModel(visitorList.stream()
+        Vector<? extends Vector<String>> dataVectors = visitorList.stream()
             .map(v -> new Vector<>(Arrays.asList(v.getName(), v.getCompany(), v.getEmail(), v.getTicket())))
-            .collect(Collectors.toCollection(Vector::new)), COLUMN_NAMES));
+            .collect(Collectors.toCollection(Vector::new));
+        visitorsTable.setModel(new DefaultTableModel(dataVectors, COLUMN_NAMES));
     }
 
     private void onOK() {
