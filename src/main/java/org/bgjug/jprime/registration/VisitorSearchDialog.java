@@ -116,7 +116,7 @@ public class VisitorSearchDialog extends JDialog {
         }
 
         List<Visitor> visitorList;
-        try (Response response = RestClientFactory.visitorApi().visitorSearch("2023", searchData)) {
+        try (Response response = RestClientFactory.visitorApi().visitorSearch(Globals.YEAR, searchData)) {
             if (response.getStatus() != 200) {
                 JOptionPane.showMessageDialog(this, "Error while calling search on the remote server!!!",
                     response.readEntity(String.class), JOptionPane.ERROR_MESSAGE);
@@ -145,7 +145,7 @@ public class VisitorSearchDialog extends JDialog {
         Object cellValue = visitorsTable.getModel().getValueAt(visitorsTable.getSelectedRow(), 3);
         String ticket = cellValue != null ? cellValue.toString() : null;
         if (ticket != null) {
-            ticketInfo = new RegistrationForm.TicketInfo(null, "JPrime 2023", "Visitor", ticket);
+            ticketInfo = new RegistrationForm.TicketInfo(null, "JPrime " + Globals.YEAR, "Visitor", ticket);
         }
 
         dispose();

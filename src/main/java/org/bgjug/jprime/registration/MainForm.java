@@ -23,27 +23,20 @@ public class MainForm {
 
     private JButton testBadgeButton;
 
+    private JButton exitButton;
+
     public MainForm() {
-        visitorRegButton.addActionListener(this::visitorRegistration);
-        testBadgeButton.addActionListener(this::testBadge);
-        speakerRegistrationButton.addActionListener(this::speakerRegistration);
-    }
-
-    public static void main(String[] args) {
-        LoginDialog dialog = new LoginDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-
-        if (!dialog.isSuccess()) {
-            System.exit(0);
-        }
-
-        frame = new JFrame("JPrime 2023 Registration");
-        frame.setContentPane(new MainForm().mainPanel);
+        frame = new JFrame("JPrime " + Globals.YEAR + " Registration");
+        frame.setContentPane(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         Point p = Utilities.centerComponentOnTheScreen(frame);
         frame.setLocation(p);
+
+        visitorRegButton.addActionListener(this::visitorRegistration);
+        testBadgeButton.addActionListener(this::testBadge);
+        speakerRegistrationButton.addActionListener(this::speakerRegistration);
+        exitButton.addActionListener(e -> frame.dispose());
         frame.setVisible(true);
     }
 
@@ -56,7 +49,7 @@ public class MainForm {
         }
 
         List<Speaker> speakerList;
-        try (Response response = RestClientFactory.speakerApi().allSpeakers("2023")) {
+        try (Response response = RestClientFactory.speakerApi().allSpeakers(Globals.YEAR)) {
             if (response.getStatus() != 200) {
                 JOptionPane.showMessageDialog(frame, "Error while loading speakers information!!!",
                     response.readEntity(String.class), JOptionPane.ERROR_MESSAGE);
@@ -75,7 +68,7 @@ public class MainForm {
                 speakerList.stream().filter(speaker -> !speaker.isPrinted()).forEach(speaker -> {
                     VisitorData visitorData = new VisitorData(speaker.getName(), "not@there.yet",
                         speaker.isFeatured() ? "Featured speaker" : "Speaker", "Speaker");
-                    BadgePrinter.printBadge("JPrime 2023", visitorData, true, true, true, true);
+                    BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true, true, true);
                     speaker.setPrinted(true);
                 });
                 break;
@@ -98,8 +91,8 @@ public class MainForm {
         }
 
         VisitorData visitorData =
-            new VisitorData("Doychin Bondzhev", "not@this.year", "dSoft-Bulgaria Ltd.", "Organizer");
-        BadgePrinter.printBadge("JPrime 2023", visitorData, true, true, true, true);
+            new VisitorData("Test Name", "not@this.year", "Sample company name", "Visitor");
+        BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true, true, true);
     }
 
     private void visitorRegistration(ActionEvent e) {

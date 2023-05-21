@@ -260,7 +260,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.bgjug.jprime.registration.MainForm</mainClass>
+                            <mainClass>org.bgjug.jprime.registration.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

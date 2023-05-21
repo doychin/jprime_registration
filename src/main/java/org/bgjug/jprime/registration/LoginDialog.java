@@ -1,7 +1,6 @@
 package org.bgjug.jprime.registration;
 
 import javax.swing.*;
-import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -10,8 +9,6 @@ import java.awt.event.WindowEvent;
 import org.bgjug.jprime.registration.client.RestClientFactory;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-
-import static org.bgjug.jprime.registration.client.RestClientFactory.loginApi;
 
 public class LoginDialog extends JDialog {
 
@@ -25,8 +22,6 @@ public class LoginDialog extends JDialog {
 
     private JPasswordField passwordField;
 
-    private String cookie;
-
     private boolean success;
 
     public LoginDialog() {
@@ -38,11 +33,13 @@ public class LoginDialog extends JDialog {
         Point p = Utilities.centerComponentOnTheScreen(this);
         setLocation(p);
 
-        setTitle("JPrime 2023 Registration");
+        setTitle("JPrime " + Globals.YEAR + " Registration");
 
-        Config config =  ConfigProvider.getConfig();
-        userNameField.setText(config.getOptionalValue("org.bgjug.jprime.registration.username", String.class).orElse(null));
-        passwordField.setText(config.getOptionalValue("org.bgjug.jprime.registration.password", String.class).orElse(null));
+        Config config = ConfigProvider.getConfig();
+        userNameField.setText(
+            config.getOptionalValue("org.bgjug.jprime.registration.username", String.class).orElse(null));
+        passwordField.setText(
+            config.getOptionalValue("org.bgjug.jprime.registration.password", String.class).orElse(null));
 
         buttonOK.addActionListener(e -> onOK());
 
@@ -64,7 +61,8 @@ public class LoginDialog extends JDialog {
 
     private void onOK() {
         try {
-            success = RestClientFactory.initializeCredentials(userNameField.getText(), new String(passwordField.getPassword()));
+            success = RestClientFactory.initializeCredentials(userNameField.getText(),
+                new String(passwordField.getPassword()));
             if (!success) {
                 JOptionPane.showMessageDialog(this, "Invalid credentials!!!", "Error",
                     JOptionPane.ERROR_MESSAGE);

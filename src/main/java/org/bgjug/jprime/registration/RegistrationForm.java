@@ -8,7 +8,6 @@ import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
-import java.time.Month;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -135,8 +134,9 @@ public class RegistrationForm {
             visitorData.setType("Volunteer");
         }
 
+        LocalDate secondDay = Globals.SECOND_DAY;
         JasperPrint print = BadgePrinter.printBadge(ticketInfo.event, visitorData,
-            LocalDate.now().isBefore(LocalDate.of(2023, Month.MAY, 31)), true, !visitorData.isRegistered(),
+            LocalDate.now().isBefore(secondDay), true, !visitorData.isRegistered(),
             true);
 
         viewPanel.removeAll();
@@ -161,7 +161,7 @@ public class RegistrationForm {
     private VisitorData findVisitorData(TicketInfo ticketInfo) {
 
         try (Response response = RestClientFactory.visitorApi()
-            .visitorByTicket("2023", ticketInfo.ticket)) {
+            .visitorByTicket(Globals.YEAR, ticketInfo.ticket)) {
 
             if (response.getStatus() != 200) {
                 appendErrorMessageToLogPane("Unable to find this ticket!!!");
