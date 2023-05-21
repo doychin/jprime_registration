@@ -72,7 +72,7 @@ public class MainForm {
 
         while (true) {
             try {
-                speakerList.stream().limit(2).filter(speaker -> !speaker.isPrinted()).forEach(speaker -> {
+                speakerList.stream().filter(speaker -> !speaker.isPrinted()).forEach(speaker -> {
                     VisitorData visitorData = new VisitorData(speaker.getName(), "not@there.yet",
                         speaker.isFeatured() ? "Featured speaker" : "Speaker", "Speaker");
                     BadgePrinter.printBadge("JPrime 2023", visitorData, true, true, true, true);

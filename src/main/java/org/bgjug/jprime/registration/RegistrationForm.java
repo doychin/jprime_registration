@@ -137,7 +137,7 @@ public class RegistrationForm {
 
         JasperPrint print = BadgePrinter.printBadge(ticketInfo.event, visitorData,
             LocalDate.now().isBefore(LocalDate.of(2023, Month.MAY, 31)), true, !visitorData.isRegistered(),
-            false);
+            true);
 
         viewPanel.removeAll();
         JRViewer viewer = new JRViewer(print);
