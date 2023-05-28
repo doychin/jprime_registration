@@ -12,9 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Vector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -135,7 +134,8 @@ public class VisitorSearchDialog extends JDialog {
             return;
         }
 
-        Vector<? extends Vector<String>> dataVectors = visitorList.stream()
+        Vector<? extends Vector<String>> dataVectors = visitorList.stream().sorted(Comparator.comparing(
+                                                                      Visitor::getName))
             .map(v -> new Vector<>(Arrays.asList(v.getName(), v.getCompany(), v.getEmail(), v.getTicket())))
             .collect(Collectors.toCollection(Vector::new));
         visitorsTable.setModel(new DefaultTableModel(dataVectors, COLUMN_NAMES));
