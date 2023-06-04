@@ -134,6 +134,10 @@ public class RegistrationForm {
             visitorData.setType("Volunteer");
         }
 
+        if ("Organizers".equalsIgnoreCase(visitorData.getRegistrantName())) {
+            visitorData.setType("Organizer");
+        }
+
         LocalDate secondDay = Globals.SECOND_DAY;
         JasperPrint print = BadgePrinter.printBadge(ticketInfo.event, visitorData,
             LocalDate.now().isBefore(secondDay), true, !visitorData.isRegistered(),
