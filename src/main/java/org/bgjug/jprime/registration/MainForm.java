@@ -5,6 +5,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.*;
 import java.util.List;
 
 import org.bgjug.jprime.registration.api.Speaker;
@@ -63,14 +64,20 @@ public class MainForm {
             return;
         }
 
+        List<String> names = Collections.emptyList();
         while (true) {
             try {
-                speakerList.stream().filter(speaker -> !speaker.isPrinted()).forEach(speaker -> {
-                    VisitorData visitorData =
-                        new VisitorData(speaker.getName(), "not@there.yet", "Speaker", "Speaker");
-                    BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true, true, true);
-                    speaker.setPrinted(true);
-                });
+                speakerList.stream()
+                           .filter(speaker -> names.isEmpty() || names.stream()
+                                                   .anyMatch(name -> speaker.getName().toLowerCase().contains(name.toLowerCase())))
+                           .filter(speaker -> !speaker.isPrinted())
+                           .forEach(speaker -> {
+                               VisitorData visitorData =
+                                   new VisitorData(speaker.getName(), "not@there.yet", "Speaker", "Speaker");
+                               BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true,
+                                   true, true);
+                               speaker.setPrinted(true);
+                           });
                 break;
             } catch (Exception e) {
                 result = JOptionPane.showConfirmDialog(frame,
