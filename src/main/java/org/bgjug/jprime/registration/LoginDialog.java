@@ -1,16 +1,34 @@
 package org.bgjug.jprime.registration;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.client.RestClientFactory;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 public class LoginDialog extends JDialog {
+    private static final byte[] KEY_BYTES = "JPr1meEncrypti0nKeyT0SecureP@ssw".getBytes();
 
     private JPanel contentPane;
 
@@ -21,6 +39,10 @@ public class LoginDialog extends JDialog {
     private JTextField userNameField;
 
     private JPasswordField passwordField;
+
+    private JCheckBox chkSaveLoginDetails;
+
+    private JComboBox<String> comboUrlList;
 
     private boolean success;
 
@@ -36,10 +58,26 @@ public class LoginDialog extends JDialog {
         setTitle("JPrime " + Globals.YEAR + " Registration");
 
         Config config = ConfigProvider.getConfig();
+        String[] urlList = config.getOptionalValue("org.bgjug.jprime.registration.url.list", String[].class)
+            .orElse(new String[] {});
+        comboUrlList.setModel(new DefaultComboBoxModel<>(urlList));
+
+        String url = config.getOptionalValue("org.bgjug.jprime.registration.url", String.class)
+            .orElse("http://localhost:8080/");
+        comboUrlList.setSelectedItem(url);
         userNameField.setText(
             config.getOptionalValue("org.bgjug.jprime.registration.username", String.class).orElse(null));
-        passwordField.setText(
-            config.getOptionalValue("org.bgjug.jprime.registration.password", String.class).orElse(null));
+        String encryptedPassword =
+            config.getOptionalValue("org.bgjug.jprime.registration.password", String.class).orElse(null);
+
+        if (StringUtils.isNotBlank(encryptedPassword)) {
+            try {
+                passwordField.setText(decryptPassword(encryptedPassword));
+            } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException |
+                     UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
+                passwordField.setText("");
+            }
+        }
 
         buttonOK.addActionListener(e -> onOK());
 
@@ -61,11 +99,43 @@ public class LoginDialog extends JDialog {
 
     private void onOK() {
         try {
-            success = RestClientFactory.initializeCredentials(userNameField.getText(),
-                new String(passwordField.getPassword()));
+            if (comboUrlList.getSelectedItem() == null || StringUtils.isBlank(comboUrlList.getSelectedItem().toString())) {
+                JOptionPane.showMessageDialog(this,
+                    "Invalid or missing base URL!",
+                    "Unable to save settings", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (StringUtils.isBlank(userNameField.getText())) {
+                JOptionPane.showMessageDialog(this, "Username is required!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (passwordField.getPassword().length == 0) {
+                JOptionPane.showMessageDialog(this, "Password is required!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            success = RestClientFactory.initializeCredentials(comboUrlList.getSelectedItem().toString(),
+                userNameField.getText(), new String(passwordField.getPassword()));
             if (!success) {
                 JOptionPane.showMessageDialog(this, "Invalid credentials!!!", "Error",
                     JOptionPane.ERROR_MESSAGE);
+            } else {
+                if (chkSaveLoginDetails.isSelected()) {
+                    Properties properties = new Properties();
+                    properties.put("org.bgjug.jprime.registration.username", userNameField.getText());
+                    properties.put("org.bgjug.jprime.registration.password",
+                        encryptPassword(new String(passwordField.getPassword())));
+                    properties.put("org.bgjug.jprime.registration.url", comboUrlList.getSelectedItem());
+
+                    try (OutputStream output = Files.newOutputStream(
+                        Paths.get("microprofile-config-overrides.properties"))) {
+                        properties.store(output, null);
+                    } catch (IOException io) {
+                        JOptionPane.showMessageDialog(this,
+                            "Unable to store current settings to a properties file!!!",
+                            "Unable to save settings", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to login: " + e.getMessage(), "Error",
@@ -82,5 +152,31 @@ public class LoginDialog extends JDialog {
 
     public boolean isSuccess() {
         return success;
+    }
+
+    private String encryptPassword(String password)
+        throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+        IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = initCipher(Cipher.ENCRYPT_MODE);
+        byte[] cipherText = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
+        return Base64.encodeBase64URLSafeString(cipherText);
+    }
+
+    private String decryptPassword(String encryptedPassword)
+        throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+        UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException {
+        Cipher cipher = initCipher(Cipher.DECRYPT_MODE);
+        String decodeStr = URLDecoder.decode(encryptedPassword, StandardCharsets.UTF_8.toString());
+        byte[] base64decodedTokenArr = Base64.decodeBase64(decodeStr.getBytes(StandardCharsets.UTF_8));
+        byte[] decryptedPassword = cipher.doFinal(base64decodedTokenArr);
+        return new String(decryptedPassword, StandardCharsets.UTF_8);
+    }
+
+    private static Cipher initCipher(int decryptMode)
+        throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKeySpec key = new SecretKeySpec(KEY_BYTES, "AES");
+        cipher.init(decryptMode, key);
+        return cipher;
     }
 }

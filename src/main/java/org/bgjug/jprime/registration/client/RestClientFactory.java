@@ -1,16 +1,15 @@
 package org.bgjug.jprime.registration.client;
 
-import javax.swing.*;
 import javax.ws.rs.core.Response;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Optional;
+import java.security.InvalidParameterException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bgjug.jprime.registration.api.LoginApi;
 import org.bgjug.jprime.registration.api.SpeakerApi;
 import org.bgjug.jprime.registration.api.TicketApi;
 import org.bgjug.jprime.registration.api.VisitorApi;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 public class RestClientFactory {
@@ -30,14 +29,12 @@ public class RestClientFactory {
 
     private final SpeakerApi speakerApi;
 
-    RestClientFactory() {
-        Optional<String> restEndPointUrl =
-            ConfigProvider.getConfig().getOptionalValue("org.bgjug.jprime.registration.url", String.class);
+    RestClientFactory(String address) {
         URL url;
         try {
-            url = new URL(restEndPointUrl.orElse("http://localhost:8080"));
+            url = new URL(address);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new InvalidParameterException("RestClientFactory requires a valid address");
         }
 
         restClientBuilder = RestClientBuilder.newBuilder()
@@ -55,13 +52,23 @@ public class RestClientFactory {
 
     private static RestClientFactory getInstance() {
         if (instance == null) {
-            new RestClientFactory();
+            throw new IllegalStateException("RestClientFactory has not been initialized");
         }
         return instance;
     }
 
-    public static LoginApi loginApi() {
-        return getInstance().loginApi;
+    private static synchronized RestClientFactory getInstance(String address) {
+        if (instance == null) {
+            if (StringUtils.isBlank(address)) {
+                throw new InvalidParameterException("RestClientFactory requires a valid address");
+            }
+            new RestClientFactory(address);
+        }
+        return instance;
+    }
+
+    public static LoginApi loginApi(String address) {
+        return getInstance(address).loginApi;
     }
 
     public static VisitorApi visitorApi() {
@@ -76,13 +83,13 @@ public class RestClientFactory {
         return getInstance().speakerApi;
     }
 
-    public static boolean initializeCredentials(String userName, String password) {
-        try (Response r = loginApi().login(userName, password, "Submit")) {
+    public static boolean initializeCredentials(String url, String userName, String password) {
+        try (Response r = loginApi(url).login(userName, password, "Submit")) {
             if (r.getStatus() != 302 || !r.getHeaderString("Location").contains("admin")) {
                 return false;
             }
 
-            SECURED_CALL_REQUEST_FILTER.initialize(loginApi(), userName, password,
+            SECURED_CALL_REQUEST_FILTER.initialize(loginApi(url), userName, password,
                 r.getCookies().get("JSESSIONID").getValue());
         }
         return true;
