@@ -16,6 +16,9 @@ import org.bgjug.jprime.registration.model.VisitorData;
 
 public class BadgePrinter {
 
+    private BadgePrinter() {
+    }
+
     public static JasperPrint printBadge(String event, VisitorData visitorData, boolean printDay1,
         boolean printDay2, boolean gift, boolean print) {
         try {
