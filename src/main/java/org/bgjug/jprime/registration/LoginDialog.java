@@ -19,7 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +31,10 @@ import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 
 public class LoginDialog extends JDialog {
+
     private static final byte[] KEY_BYTES = "JPr1meEncrypti0nKeyT0SecureP@ssw".getBytes();
+
+    private static final String ERROR_TITLE = "Error";
 
     private JPanel contentPane;
 
@@ -87,6 +93,7 @@ public class LoginDialog extends JDialog {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
@@ -99,50 +106,68 @@ public class LoginDialog extends JDialog {
 
     private void onOK() {
         try {
-            if (comboUrlList.getSelectedItem() == null || StringUtils.isBlank(comboUrlList.getSelectedItem().toString())) {
-                JOptionPane.showMessageDialog(this,
-                    "Invalid or missing base URL!",
-                    "Unable to save settings", JOptionPane.ERROR_MESSAGE);
+            if (comboUrlList.getSelectedItem() == null || StringUtils.isBlank(
+                comboUrlList.getSelectedItem().toString())) {
+                JOptionPane.showMessageDialog(this, "Invalid or missing base URL!", "Unable to save settings",
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (StringUtils.isBlank(userNameField.getText())) {
-                JOptionPane.showMessageDialog(this, "Username is required!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Username is required!", ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
             if (passwordField.getPassword().length == 0) {
-                JOptionPane.showMessageDialog(this, "Password is required!", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Password is required!", ERROR_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
             success = RestClientFactory.initializeCredentials(comboUrlList.getSelectedItem().toString(),
                 userNameField.getText(), new String(passwordField.getPassword()));
             if (!success) {
-                JOptionPane.showMessageDialog(this, "Invalid credentials!!!", "Error",
+                JOptionPane.showMessageDialog(this, "Invalid credentials!!!", ERROR_TITLE,
                     JOptionPane.ERROR_MESSAGE);
             } else {
                 if (chkSaveLoginDetails.isSelected()) {
-                    Properties properties = new Properties();
-                    properties.put("org.bgjug.jprime.registration.username", userNameField.getText());
-                    properties.put("org.bgjug.jprime.registration.password",
-                        encryptPassword(new String(passwordField.getPassword())));
-                    properties.put("org.bgjug.jprime.registration.url", comboUrlList.getSelectedItem());
-
-                    try (OutputStream output = Files.newOutputStream(
-                        Paths.get("microprofile-config-overrides.properties"))) {
-                        properties.store(output, null);
-                    } catch (IOException io) {
-                        JOptionPane.showMessageDialog(this,
-                            "Unable to store current settings to a properties file!!!",
-                            "Unable to save settings", JOptionPane.ERROR_MESSAGE);
-                    }
+                    saveProperties();
                 }
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Unable to login: " + e.getMessage(), "Error",
+            JOptionPane.showMessageDialog(this, "Unable to login: " + e.getMessage(), ERROR_TITLE,
                 JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         // add your code here
         dispose();
+    }
+
+    private void saveProperties() {
+        List<String> urlList = IntStream.range(0, comboUrlList.getItemCount())
+            .mapToObj(i -> comboUrlList.getItemAt(i))
+            .collect(Collectors.toList());
+
+        String selectedUrl = comboUrlList.getSelectedItem().toString();
+        if (!urlList.contains(selectedUrl)) {
+            urlList.add(selectedUrl);
+        }
+
+        Properties properties = new Properties();
+        properties.put("org.bgjug.jprime.registration.username", userNameField.getText());
+        properties.put("org.bgjug.jprime.registration.url", selectedUrl);
+        properties.put("org.bgjug.jprime.registration.url.list", String.join(",", urlList));
+
+        try (OutputStream output = Files.newOutputStream(
+            Paths.get("microprofile-config-overrides.properties"))) {
+            properties.put("org.bgjug.jprime.registration.password",
+                encryptPassword(new String(passwordField.getPassword())));
+            properties.store(output, "JPrime Registration program properties");
+        } catch (IOException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException |
+                 InvalidKeyException | NoSuchAlgorithmException e) {
+            JOptionPane.showMessageDialog(this,
+                "Unable to store current settings to a properties file!!!\n Error: " + e.getMessage(),
+                "Unable to save settings", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void onCancel() {
