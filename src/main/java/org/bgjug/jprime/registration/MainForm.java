@@ -27,7 +27,7 @@ public class MainForm {
     private JButton exitButton;
 
     public MainForm() {
-        frame = new JFrame("JPrime " + Globals.YEAR + " Registration");
+        frame = new JFrame(String.format("JPrime %s Registration", Globals.YEAR));
         frame.setContentPane(mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -37,7 +37,10 @@ public class MainForm {
         visitorRegButton.addActionListener(this::visitorRegistration);
         testBadgeButton.addActionListener(this::testBadge);
         speakerRegistrationButton.addActionListener(this::speakerRegistration);
-        exitButton.addActionListener(e -> frame.dispose());
+        exitButton.addActionListener(e -> {
+            frame.dispose();
+            System.exit(0);
+        });
         frame.setVisible(true);
     }
 

@@ -8,7 +8,7 @@ public class Globals {
 
     public static final String YEAR = ConfigProvider.getConfig()
         .getOptionalValue("org.bgjug.jprime.registration.year", String.class)
-        .orElse("2024");
+        .orElse("2025");
 
     public static final LocalDate FIRST_DAY = ConfigProvider.getConfig()
         .getOptionalValue("org.bgjug.jprime.registration.first.day", LocalDate.class)
