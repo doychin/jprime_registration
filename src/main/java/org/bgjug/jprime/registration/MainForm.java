@@ -102,7 +102,7 @@ public class MainForm {
 
         VisitorData visitorData =
             new VisitorData("Test Name", "not@this.year", "Sample company name", "Visitor");
-        BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true, true, true);
+        BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, false, false, true);
     }
 
     private void visitorRegistration(ActionEvent e) {

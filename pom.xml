@@ -13,6 +13,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <intellij.version>231.8770.65</intellij.version>
+        <jasperreports.versoin>6.21.5</jasperreports.versoin>
     </properties>
 
     <profiles>
@@ -178,7 +179,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
-            <version>6.20.2</version>
+            <version>${jasperreports.versoin}</version>
         </dependency>
 
         <dependency>
@@ -190,7 +191,7 @@
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
-            <version>6.20.2</version>
+            <version>${jasperreports.versoin}</version>
         </dependency>
         <dependency>
             <groupId>com.github.librepdf</groupId>

@@ -27,11 +27,12 @@
 	<parameter name="name" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Doychin Bondzhev"]]></defaultValueExpression>
 	</parameter>
+	<parameter name="lunch2" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<detail>
-		<band height="130" splitType="Stretch">
+		<band height="132" splitType="Stretch">
 			<textField>
 				<reportElement x="3" y="6" width="134" height="25" uuid="7c5fe2bd-714a-4e10-b8c8-30a6edbcfa09"/>
 				<textElement textAlignment="Center">
@@ -76,12 +77,15 @@
 				<reportElement x="3" y="107" width="20" height="20" uuid="586f3c2a-1c79-400a-bd6d-6dfbdd1157a8">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$P{lunch} != null]]></printWhenExpression>
 				</reportElement>
 			</rectangle>
 			<textField>
-				<reportElement x="23" y="107" width="114" height="20" uuid="eb8a760c-daea-48bc-8e58-fe676562d1af">
+				<reportElement x="23" y="107" width="103" height="20" uuid="eb8a760c-daea-48bc-8e58-fe676562d1af">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{lunch} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="14"/>
@@ -90,10 +94,11 @@
 				<textFieldExpression><![CDATA[$P{lunch}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="163" y="107" width="89" height="20" uuid="dd43f4f5-af39-47b5-85d5-655427161565">
+				<reportElement x="150" y="107" width="102" height="20" uuid="dd43f4f5-af39-47b5-85d5-655427161565">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-					<printWhenExpression><![CDATA[$P{gift}]]></printWhenExpression>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[$P{gift} && ($P{lunch2} == null)]]></printWhenExpression>
 				</reportElement>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 				<textElement verticalAlignment="Middle">
@@ -103,12 +108,25 @@
 				<text><![CDATA[Gift set]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement x="143" y="107" width="20" height="20" uuid="e638328b-45cf-4865-a050-3aa036245694">
+				<reportElement x="130" y="107" width="20" height="20" uuid="e638328b-45cf-4865-a050-3aa036245694">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
-					<printWhenExpression><![CDATA[$P{gift}]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{gift} || ($P{lunch2} != null)]]></printWhenExpression>
 				</reportElement>
 			</rectangle>
+			<textField>
+				<reportElement x="150" y="107" width="102" height="20" isPrintInFirstWholeBand="true" uuid="9e99ac7d-d820-4ffc-acf1-ccc77bd1fcee">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<printWhenExpression><![CDATA[!$P{gift} && ($P{lunch2} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="14"/>
+					<paragraph lineSpacing="Single" leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{lunch2}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

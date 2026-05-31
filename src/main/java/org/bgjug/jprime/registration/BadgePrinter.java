@@ -35,6 +35,10 @@ public class BadgePrinter {
 
             parameters.put("gift", gift);
             parameters.put("lunch", "Lunch day One");
+            if (printDay1 && !printDay2) {
+                parameters.put("lunch2", "Lunch day Two");
+                parameters.put("gift", false);
+            }
 
             JasperPrintManager printManager =
                 JasperPrintManager.getInstance(DefaultJasperReportsContext.getInstance());
