@@ -140,7 +140,7 @@ public class RegistrationForm {
 
         LocalDate secondDay = Globals.SECOND_DAY;
         JasperPrint print = BadgePrinter.printBadge(ticketInfo.event, visitorData,
-            LocalDate.now().isBefore(secondDay), true, !visitorData.isRegistered(),
+            true /*LocalDate.now().isBefore(secondDay) */, false, false, //!visitorData.isRegistered(),
             true);
 
         viewPanel.removeAll();

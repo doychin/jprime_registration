@@ -77,8 +77,8 @@ public class MainForm {
                            .forEach(speaker -> {
                                VisitorData visitorData =
                                    new VisitorData(speaker.getName(), "not@there.yet", "Speaker", "Speaker");
-                               BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, true,
-                                   true, true);
+                               BadgePrinter.printBadge("JPrime " + Globals.YEAR, visitorData, true, false,
+                                   false, true);
                                speaker.setPrinted(true);
                            });
                 break;
